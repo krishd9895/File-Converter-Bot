@@ -1,6 +1,6 @@
 #!/bin/bash
-# Start Flask server in the background
-flask run -h 0.0.0.0 -p 10000 &
+# Set Flask environment variable
+export FLASK_APP=/app/app.py
 
-# Run the main Python application
-python3 main.py
+# Start Flask server
+flask run -h 0.0.0.0 -p 10000
