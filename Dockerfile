@@ -19,7 +19,7 @@ FROM ubuntu:22.04
 
 # Set environment variables to avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC  # Set your desired timezone here
+ENV TZ=Etc/UTC
 
 # Install required packages
 RUN apt-get update && apt-get install -y python3-pip libzbar0 libmagickwand-dev python3-opencv
