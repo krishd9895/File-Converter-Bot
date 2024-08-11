@@ -1,5 +1,5 @@
 # Use python:3.11-slim as the base image
-FROM python:3.11-slim
+FROM python:3.11
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
     && rm -rf /var/lib/apt/lists/*
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y build-essential
 
 # Install Chrome and ChromeDriver
 RUN wget -q https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.99/linux64/chrome-linux64.zip \
