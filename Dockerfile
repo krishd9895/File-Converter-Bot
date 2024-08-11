@@ -1,36 +1,26 @@
-# Stage 1: Base image to build the application
-FROM bipinkrish/file-converter:latest AS builder
+# Stage 1: Build stage
+FROM bipinkrish/file-converter:latest AS build-stage
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    iputils-ping \
+    build-essential \
+    zbar-tools \
+    libzbar-dev \
+    libmagickwand-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install necessary tools and dependencies
-RUN apt update && apt install -y iputils-ping
-
-# Set the working directory
-WORKDIR /app
-
-# Copy all files to the working directory
 COPY . .
-
-# Make necessary scripts executable
 RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Final image with minimal base image
-FROM alpine:3.12
+# Stage 2: Final stage
+FROM alpine:3.18
+RUN apk --no-cache add python3 py3-pip bash libmagic zbar imagemagick
+COPY --from=build-stage /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=build-stage /app /app
 
-# Install necessary runtime dependencies
-RUN apk add --no-cache python3 py3-pip
+# Install runtime dependencies
+RUN pip install --no-cache-dir pyrogram tgcrypto pickle5==0.0.11 telegraph pykeyboard==0.1.5 halo==0.0.31 Wand==0.6.8 tensorflow-cpu==2.9.1 requests SpeechRecognition pydub gTTS Pillow bs4 ttconv py2many pyzbar pyinstaller asteval arrow plotly kaleido websocket-client flask
 
-# Copy only the necessary files from the build stage
-WORKDIR /app
-COPY --from=builder /app .
-
-# Set environment variable
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
-
-# Set executable permissions again if needed
-RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
-
-# Command to run the application
+WORKDIR /app
 CMD flask run -h 0.0.0.0 -p 10000 & python3 main.py
