@@ -1,7 +1,7 @@
-pyrogram==2.0.35
-tgcrypto==1.2.3
+pyrogram==2.2.11
+tgcrypto
 pickle5==0.0.11
-telegraph==2.1.0
+telegraph
 pykeyboard==0.1.5
 halo==0.0.31
 Wand==0.6.8
