@@ -4,10 +4,10 @@ FROM python:3.11-slim
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
-ENV PATH=/root/.local/bin:/opt/chrome:$PATH
+ENV PATH=/opt/chrome:$PATH
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
 
-# Install runtime dependencies
+# Install runtime and build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libmagic1 \
     libzbar0 \
@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     default-jre \
     wget \
     unzip \
+    gcc \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Chrome and ChromeDriver
@@ -30,7 +32,7 @@ RUN wget -q https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Download JFLAP
 RUN wget https://www.jflap.org/jflaptmp/july27-18/JFLAP7.1.jar -O /usr/local/bin/JFLAP7.1.jar
