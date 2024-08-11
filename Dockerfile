@@ -68,11 +68,14 @@ COPY --from=builder /usr/local/bin/JFLAP7.1.jar /usr/local/bin/JFLAP7.1.jar
 ENV PATH=/root/.local/bin:/opt/chrome:$PATH
 
 # Copy application files
-COPY c41lab.py negfix8 tgsconverter c4go /app/
+COPY c41lab.py negfix8 tgsconverter c4go main.py /app/
 WORKDIR /app
 
 # Set permissions
-RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
+RUN chmod 777 c41lab.py negfix8 tgsconverter c4go main.py
 
-# Start the application
-CMD flask run -h 0.0.0.0 -p 10000 & python3 main.py
+# Start the application with a script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]
