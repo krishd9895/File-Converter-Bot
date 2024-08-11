@@ -27,11 +27,9 @@ ENV TZ=Etc/UTC
 
 # Copy the installed Python packages and the app from the build stage
 COPY --from=build-stage /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-# Uncomment the following line if you need to support multiple Python versions
-# COPY --from=build-stage /usr/local/lib/python3.*/site-packages /usr/local/lib/python3.*/site-packages
 
+# Copy the application files
 COPY --from=build-stage /app /app
-
 
 # Set environment variables
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
