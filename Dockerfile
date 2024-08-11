@@ -1,40 +1,38 @@
 # Stage 1: Build stage
-FROM bipinkrish/file-converter:latest AS build-stage
+FROM bipinkrish/file-converter:latest as build-stage
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    iputils-ping \
-    build-essential \
-    zbar-tools \
-    libzbar-dev \
-    libmagickwand-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install required dependencies
+RUN apt-get update && apt-get install -y iputils-ping
 
+# Copy the application code
 COPY . /app
 WORKDIR /app
 
+# Set file permissions
 RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
 
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Final stage with Ubuntu
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    TZ=Etc/UTC  # Set your desired timezone here
+# Set environment variables to avoid interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC  # Set your desired timezone here
 
-RUN apt-get update && apt-get install -y python3-pip libzbar0 libmagickwand-dev
+# Install required packages
+RUN apt-get update && apt-get install -y python3-pip libzbar0 libmagickwand-dev python3-opencv
 
-# Install OpenCV and other Python dependencies
-RUN apt-get update && apt-get install -y python3-opencv
-
-WORKDIR /app
-
-# Copy necessary files from the build stage
+# Copy the installed Python packages and the app from the build stage
+COPY --from=build-stage /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY --from=build-stage /app /app
 
-# Install runtime dependencies including OpenCV
-RUN pip install --no-cache-dir pyrogram tgcrypto pickle5==0.0.11 telegraph pykeyboard==0.1.5 halo==0.0.31 Wand==0.6.8 tensorflow-cpu==2.9.1 requests SpeechRecognition pydub gTTS Pillow bs4 ttconv py2many pyzbar pyinstaller asteval arrow plotly kaleido websocket-client flask
+# Set the working directory
+WORKDIR /app
 
+# Set the environment variable for Flask
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
 
+# Run the Flask application
 CMD flask run -h 0.0.0.0 -p 10000 & python3 main.py
