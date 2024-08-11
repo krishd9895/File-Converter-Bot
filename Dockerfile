@@ -16,10 +16,10 @@ RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Final stage
-FROM alpine:3.18
+# Stage 2: Final stage with Ubuntu
+FROM ubuntu:22.04
 
-RUN apk --no-cache add python3 py3-pip bash libmagic zbar imagemagick
+RUN apt-get update && apt-get install -y python3-pip libzbar0 libmagickwand-dev
 
 WORKDIR /app
 
