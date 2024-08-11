@@ -30,7 +30,7 @@ WORKDIR /app
 COPY --from=build-stage /app /app
 
 # Install runtime dependencies including OpenCV
-RUN pip install --no-cache-dir pyrogram tgcrypto pickle5==0.0.11 telegraph pykeyboard==0.1.5 halo==0.0.31 Wand==0.6.8 tensorflow-cpu==2.9.1 requests SpeechRecognition pydub gTTS Pillow bs4 ttconv py2many pyzbar pyinstaller asteval arrow plotly kaleido websocket-client flask dotenv
+RUN pip install --no-cache-dir pyrogram tgcrypto pickle5==0.0.11 telegraph pykeyboard==0.1.5 halo==0.0.31 Wand==0.6.8 tensorflow-cpu==2.9.1 requests SpeechRecognition pydub gTTS Pillow bs4 ttconv py2many pyzbar pyinstaller asteval arrow plotly kaleido websocket-client flask python-dotenv
 
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
 
