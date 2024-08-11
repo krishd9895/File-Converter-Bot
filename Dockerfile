@@ -16,20 +16,24 @@ RUN chmod 777 c41lab.py negfix8 tgsconverter c4go
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Final stage
-FROM alpine:3.18
+FROM bipinkrish/file-converter:latest
 
 # Install necessary runtime dependencies
-RUN apk --no-cache add python3 py3-pip bash libmagic zbar imagemagick
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    iputils-ping \
+    python3-opencv \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables to avoid interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
-# Copy the installed Python packages and the app from the build stage
-COPY --from=build-stage /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-
 # Copy the application files
 COPY --from=build-stage /app /app
+WORKDIR /app
+
+# Copy the installed Python packages from the build stage
+COPY --from=build-stage /usr/local/lib/python3.*/site-packages /usr/local/lib/python3/site-packages
 
 # Set environment variables
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
