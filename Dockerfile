@@ -43,6 +43,7 @@ FROM python:3.10-slim-buster
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 ENV QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox"
+ENV FLASK_APP=/app/app.py
 
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -68,11 +69,11 @@ COPY --from=builder /usr/local/bin/JFLAP7.1.jar /usr/local/bin/JFLAP7.1.jar
 ENV PATH=/root/.local/bin:/opt/chrome:$PATH
 
 # Copy application files
-COPY c41lab.py negfix8 tgsconverter c4go main.py /app/
+COPY c41lab.py negfix8 tgsconverter c4go app.py buttons /app/
 WORKDIR /app
 
 # Set permissions
-RUN chmod 777 c41lab.py negfix8 tgsconverter c4go main.py
+RUN chmod 777 c41lab.py negfix8 tgsconverter c4go app.py buttons
 
 # Start the application with a script
 COPY start.sh /start.sh
